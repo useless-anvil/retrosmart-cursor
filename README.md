@@ -31,7 +31,7 @@ The cursor artwork itself is hand-drawn/hand-edited pixel art
 # Previews
 
 ![Black & White](media/black_white.png)
-![Catppucin](media/catppucin.png)
+![Catppucin](media/catppuccin.png)
 ![Everforest](media/everforest.png)
 ![Rose Pine](media/rose_pine.png)
 ![Solarized Dark](media/solarized_dark.png)
