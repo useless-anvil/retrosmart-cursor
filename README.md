@@ -1,4 +1,4 @@
-![banner](banner.png)
+![banner](media/banner.png)
 
 # Retrosmart Xcursor (fork)
 
@@ -10,7 +10,7 @@ by [Manuel Domínguez López](https://github.com/mdomlop). Credit for the
 original artwork and design goes to him — see [AUTHORS](AUTHORS) and
 [NOTES.md](NOTES.md) for what changed in this fork.
 
-![preview](preview.png)
+![preview](media/preview.png)
 
 ## What's new in this fork
 
