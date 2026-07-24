@@ -8,10 +8,6 @@ and turned into a rebuild of the packaging/build pipeline: new sizes, color
 scheme handling, theme variants. The cursor designs are still Manuel's —
 this fork adapts them, it doesn't reinvent them.
 
-If something looks different from upstream, it's probably intentional (new
-sizes, palette handling). If it looks like an actual regression, open an
-issue.
-
 ## On AI assistance
 
 Build scripts and docs were put together with AI help. The cursor art in
