@@ -1,0 +1,29 @@
+# This is the color scheme for the white theme (so white fill and black outline)
+# The colors are HEX coded.
+#
+# This is just so you could make your own color scheme.
+#
+# Fields:
+#   primary    (required) fill color      -- HEX, e.g. "#FFFFFF"
+#   secondary  (required) outline color   -- HEX, e.g. "#000000"
+#   shadow     (optional) drop-shadow color for the "-shadow" variant of this
+#              scheme. Defaults to "#000000". Set to `false` to skip building
+#              a shadow variant for this scheme entirely.
+#   name       (optional) display name shown in the theme picker.
+#              Defaults to a title-cased version of the filename
+#              (e.g. "gruvbox_scheme.yaml" -> "Gruvbox").
+#   name_es    (optional) Spanish display name. Defaults to `name`.
+#
+# The scheme's id (used to build the theme name "retrosmart-xcursor-<id>")
+# is the filename with a trailing "_scheme" and ".yaml" stripped, so
+# "white_scheme.yaml" -> id "white" -> themes "retrosmart-xcursor-white"
+# and "retrosmart-xcursor-white-shadow".
+#
+# If you want full control over the generated index.theme text (extra
+# locales, different wording, etc.) instead of the auto-generated one, drop
+# a src/themes/retrosmart-xcursor-<id>[-shadow].theme file — build.sh will
+# use that instead of generating one.
+
+primary: "#FFFFFF"
+secondary: "#000000"
+shadow: "#000000"

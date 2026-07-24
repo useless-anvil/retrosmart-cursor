@@ -1,0 +1,75 @@
+# hotspots.yaml -- one entry per cursor, tweak x/y to move the click point
+#
+# x, y   = pixel offset from the top-left of the 32px image (0,0 = top-left corner)
+# delay  = frame delay in ms, only needed for animated cursors (progress, wait)
+#
+# Cursors are grouped under headings just for readability; the group names
+# themselves aren't read by the build, only "name/size/x/y/file/delay" are.
+
+Basic / System:
+  - {name: default,       size: 32, x:  0, y:  0, file: 32-default.png}
+  - {name: pointer,       size: 32, x:  4, y:  0, file: 32-pointer.png}
+  - {name: context-menu,  size: 32, x:  0, y:  0, file: 32-context-menu.png}
+  - {name: help,          size: 32, x:  0, y:  0, file: 32-help.png}
+  - {name: progress,      size: 32, x:  0, y:  0, file: 32-progress1.png, delay: 50}
+  - {name: wait,          size: 32, x: 12, y: 12, file: 32-wait01.png,    delay: 120}
+
+Text:
+  - {name: text,          size: 32, x:  4, y:  9, file: 32-text.png}
+  - {name: vertical-text, size: 32, x:  8, y:  4, file: 32-vertical-text.png}
+
+Select / Edit / Draw:
+  - {name: cell,          size: 32, x:  7, y:  6, file: 32-cell.png}
+  - {name: crosshair,     size: 32, x:  7, y:  7, file: 32-crosshair.png}
+  - {name: color-picker,  size: 32, x:  1, y: 16, file: 32-color-picker.png}
+  - {name: draft,         size: 32, x:  0, y: 17, file: 32-draft.png}
+  - {name: pencil,        size: 32, x:  0, y: 19, file: 32-pencil.png}
+  - {name: zoom-in,       size: 32, x:  5, y:  5, file: 32-zoom-in.png}
+  - {name: zoom-out,      size: 32, x:  5, y:  5, file: 32-zoom-out.png}
+
+Drag and Drop:
+  - {name: copy,          size: 32, x:  9, y:  2, file: 32-copy.png}
+  - {name: dnd-move,      size: 32, x:  0, y:  0, file: 32-dnd-move.png}
+  - {name: dnd-no-drop,   size: 32, x:  8, y:  4, file: 32-dnd-no-drop.png}
+  - {name: no-drop,       size: 32, x:  0, y:  0, file: 32-no-drop.png}
+  - {name: not-allowed,   size: 32, x:  8, y:  8, file: 32-not-allowed.png}
+  - {name: alias,         size: 32, x:  0, y:  0, file: 32-alias.png}
+
+Grab / Pan:
+  - {name: openhand,      size: 32, x:  9, y:  6, file: 32-openhand.png}
+  - {name: closedhand,    size: 32, x:  9, y:  2, file: 32-closedhand.png}
+  - {name: fleur,         size: 32, x:  7, y:  7, file: 32-fleur.png}
+  - {name: all-scroll,    size: 32, x:  7, y:  7, file: 32-all-scroll.png}
+
+Edge Resize:
+  - {name: top_side,      size: 32, x:  7, y:  0, file: 32-top_side.png}
+  - {name: bottom_side,   size: 32, x:  7, y: 24, file: 32-bottom_side.png}
+  - {name: left_side,     size: 32, x:  0, y:  7, file: 32-left_side.png}
+  - {name: right_side,    size: 32, x: 23, y:  7, file: 32-right_side.png}
+
+Corner Resize:
+  - {name: top_left_corner,     size: 32, x:  0, y:  0, file: 32-top_left_corner.png}
+  - {name: top_right_corner,    size: 32, x: 22, y:  0, file: 32-top_right_corner.png}
+  - {name: bottom_left_corner,  size: 32, x:  0, y: 22, file: 32-bottom_left_corner.png}
+  - {name: bottom_right_corner, size: 32, x: 23, y: 23, file: 32-bottom_right_corner.png}
+
+Generic Resize / Split:
+  - {name: size_hor,      size: 32, x:  7, y:  3, file: 32-size_hor.png}
+  - {name: size_ver,      size: 32, x:  3, y:  7, file: 32-size_ver.png}
+  - {name: size_bdiag,    size: 32, x:  6, y:  6, file: 32-size_bdiag.png}
+  - {name: size_fdiag,    size: 32, x:  6, y:  6, file: 32-size_fdiag.png}
+  - {name: col-resize,    size: 32, x:  8, y:  7, file: 32-col-resize.png}
+  - {name: row-resize,    size: 32, x:  7, y:  7, file: 32-row-resize.png}
+
+Directional Arrows:
+  - {name: up-arrow,      size: 32, x:  4, y:  0, file: 32-up-arrow.png}
+  - {name: down-arrow,    size: 32, x:  4, y: 15, file: 32-down-arrow.png}
+  - {name: left-arrow,    size: 32, x:  0, y:  4, file: 32-left-arrow.png}
+  - {name: right-arrow,   size: 32, x: 15, y:  4, file: 32-right-arrow.png}
+
+Misc:
+  - {name: center_ptr,      size: 32, x:  5, y:  0, file: 32-center_ptr.png}
+  - {name: right_ptr,       size: 32, x: 10, y:  0, file: 32-right_ptr.png}
+  - {name: pirate,          size: 32, x: 12, y: 15, file: 32-pirate.png}
+  - {name: x-cursor,        size: 32, x:  7, y:  7, file: 32-x-cursor.png}
+  - {name: wayland-cursor,  size: 32, x:  8, y:  4, file: 32-wayland-cursor.png}
