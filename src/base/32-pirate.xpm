@@ -2,8 +2,8 @@
 static char * 32_pirate_xpm[] = {
 "32 32 3 1",
 " 	c None",
-".	c black",
-"+	c white",
+".	c #00FFFF",
+"+	c #FF7F50",
 "         .......                ",
 "        .+++++++.               ",
 "       .+++++++++.              ",

@@ -3,8 +3,8 @@ static char *_2_zoom_in[] = {
 /* columns rows colors chars-per-pixel */
 "32 32 3 1 ",
 "  c None",
-". c black",
-"X c white",
+". c #00FFFF",
+"X c #FF7F50",
 /* pixels */
 "    ....                        ",
 "  ..XXXX..                      ",
