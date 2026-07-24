@@ -10,8 +10,6 @@ by [Manuel Domínguez López](https://github.com/mdomlop). Credit for the
 original artwork and design goes to him — see [AUTHORS](AUTHORS) and
 [NOTES.md](NOTES.md) for what changed in this fork.
 
-![preview](media/preview.png)
-
 ## What's new in this fork
 
 - New sizes: 32px, 64px, and 128px (up from the original set), better for
@@ -28,7 +26,16 @@ original artwork and design goes to him — see [AUTHORS](AUTHORS) and
   the new sizes/hotspots.
 
 Some of this fork's tooling and docs were put together with AI assistance.
-The cursor artwork itself is hand-drawn/hand-edited pixel art.
+The cursor artwork itself is hand-drawn/hand-edited pixel art
+
+# Previews
+
+![Black & White](media/black_white.png)
+![Catppucin](media/catppucin.png)
+![Everforest](media/everforest.png)
+![Rose Pine](media/rose_pine.png)
+![Solarized Dark](media/solarized_dark.png)
+![White & Black](media/white_black.png)
 
 ## Requirements
 
@@ -40,7 +47,7 @@ The cursor artwork itself is hand-drawn/hand-edited pixel art.
 ## Building
 
 ```sh
-git clone <this-repo-url>
+git clone https://github.com/useless-anvil/retrosmart-cursor.git
 cd retrosmart_source
 make            # or: ./build.sh all
 ```
