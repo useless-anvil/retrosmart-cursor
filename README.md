@@ -16,11 +16,7 @@ original artwork and design goes to him — see [AUTHORS](AUTHORS) and
   HiDPI screens.
 - A color scheme system, so new palettes are easy to add (see
   `color_schemes/`).
-- Four theme variants: white/black, each with or without a drop shadow.
-  - `retrosmart-xcursor-white`
-  - `retrosmart-xcursor-white-shadow`
-  - `retrosmart-xcursor-black`
-  - `retrosmart-xcursor-black-shadow`
+- Seven theme variants each with or without a drop shadow.
 - Small touch-ups to a few cursor glyphs while adapting them to the new
   build pipeline — not a correction of the original design, just fit for
   the new sizes/hotspots.
