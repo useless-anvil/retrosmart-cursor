@@ -1,0 +1,7 @@
+# This is kinda like a light gruvbox theme.
+
+name: "Gruvbox"
+name_es: "Gruvbox"
+primary: "#ebdbb2"
+secondary: "#282828"
+shadow: "#000000"
