@@ -16,7 +16,6 @@ original artwork and design goes to him — see [AUTHORS](AUTHORS) and
 - **Unified Color Schemes**: Master configuration in `schemes.yaml` using clean `outline` and `fill` color fields.
 - **Streamlined Multi-Core Build**: In-memory streaming directly to PNGs (no intermediate XPM files on disk) with parallel CPU execution (`nproc`).
 - **Theme Variants**: 14 distinct color schemes, each with plain and drop-shadow versions.
-- **Automated Previews & Pling Showcases**: Automated high-res preview sheet generator (`make previews`).
 
 Some of this fork's tooling and docs were put together with AI assistance.
 The cursor artwork itself is hand-drawn/hand-edited pixel art.
@@ -73,7 +72,6 @@ Other build targets:
 ./build.sh in       # generate xcursorgen input files only
 ./build.sh cursors  # build binaries/aliases/theme metadata only
 ./build.sh clean    # remove artifacts/ and build_themes/
-make previews       # generate 2400x1500 previews & Pling showcase images
 ```
 
 - To tweak theme palettes: edit `schemes.yaml`.
