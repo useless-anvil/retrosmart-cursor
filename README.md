@@ -23,13 +23,25 @@ The cursor artwork itself is hand-drawn/hand-edited pixel art.
 
 ## Previews
 
-![Black & White](media/black_white.png)
-![Catppuccin](media/catppuccin.png)
-![Everforest](media/everforest.png)
-![Gruvbox](media/gruvbox.png)
-![Rose Pine](media/rose_pine.png)
-![Solarized Dark](media/solarized_dark.png)
-![White & Black](media/white_black.png)
+### Mac-ish Styles
+
+![Mac-ish Classic](media/mac-ish-classic.png)
+![Mac-ish Inverted](media/mac-ish-inverted.png)
+![Mac-ish Catppuccin](media/mac-ish-catppucin.png)
+![Mac-ish Everforest](media/mac-ish-everforest.png)
+![Mac-ish Gruvbox](media/mac-ish-gruvbox.png)
+![Mac-ish Rose Pine](media/mac-ish-rose_pine.png)
+![Mac-ish Solarized Dark](media/mac-ish-solarized_dark.png)
+
+### Win-ish Styles
+
+![Win-ish Classic](media/win-ish-classic.png)
+![Win-ish Inverted](media/win-ish-inverted.png)
+![Win-ish Catppuccin](media/win-ish-catppucin.png)
+![Win-ish Everforest](media/win-ish-everforest.png)
+![Win-ish Gruvbox](media/win-ish-gruvbox.png)
+![Win-ish Rose Pine](media/win-ish-rose_pine.png)
+![Win-ish Solarized Dark](media/win-ish-solarized_dark.png)
 
 ## Requirements
 

@@ -23,6 +23,3 @@ in:
 
 cursors:
 	./build.sh cursors
-
-previews:
-	python3 tools/generate_previews.py

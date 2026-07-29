@@ -25,14 +25,14 @@ mac-ish-gruvbox:
   fill: "#ebdbb2"
   cursors: "mac-ish"
 
-mac-ish-classic:
-  name: "CLASSIC (Mac-ish)"
+mac-ish-inverted:
+  name: "INVERTED (Mac-ish)"
   outline: "#FFFFFF"
   fill: "#000000"
   cursors: "mac-ish"
 
-mac-ish-inverted:
-  name: "INVERTED (Mac-ish)"
+mac-ish-classic:
+  name: "Classic (Mac-ish)"
   outline: "#000000"
   fill: "#FFFFFF"
   cursors: "mac-ish"
