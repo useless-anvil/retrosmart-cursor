@@ -1,0 +1,92 @@
+# Master color schemes definition
+#
+# Each scheme specifies:
+#   name:     Display name used in index.theme
+#   name_es:  Optional Spanish display name (defaults to name)
+#   outline:  Outline color (replaces cyan #00FFFF in xpm sources)
+#   fill:     Fill color (replaces coral #FF7F50 in xpm sources)
+#   cursors:  Which src/base/<style>/ folder to use for cursor artwork
+
+mac-ish-catppucin:
+  name: "CATPPUCCIN (Mac-ish)"
+  outline: "#1e1e2e"
+  fill: "#cdd6f4"
+  cursors: "mac-ish"
+
+mac-ish-everforest:
+  name: "EVERFOREST (Mac-ish)"
+  outline: "#2d353b"
+  fill: "#d3c6aa"
+  cursors: "mac-ish"
+
+mac-ish-gruvbox:
+  name: "GRU[V]BOX (Mac-ish)"
+  outline: "#282828"
+  fill: "#ebdbb2"
+  cursors: "mac-ish"
+
+mac-ish-classic:
+  name: "CLASSIC (Mac-ish)"
+  outline: "#FFFFFF"
+  fill: "#000000"
+  cursors: "mac-ish"
+
+mac-ish-inverted:
+  name: "INVERTED (Mac-ish)"
+  outline: "#000000"
+  fill: "#FFFFFF"
+  cursors: "mac-ish"
+
+mac-ish-rose_pine:
+  name: "ROSE PINE (Mac-ish)"
+  outline: "#191724"
+  fill: "#e0def4"
+  cursors: "mac-ish"
+
+mac-ish-solarized_dark:
+  name: "SOLARIZED DARK (Mac-ish)"
+  outline: "#002b36"
+  fill: "#93a1a1"
+  cursors: "mac-ish"
+
+win-ish-catppucin:
+  name: "CATPPUCCIN (Win-ish)"
+  outline: "#1e1e2e"
+  fill: "#cdd6f4"
+  cursors: "win-ish"
+
+win-ish-everforest:
+  name: "EVERFOREST (Win-ish)"
+  outline: "#2d353b"
+  fill: "#d3c6aa"
+  cursors: "win-ish"
+
+win-ish-gruvbox:
+  name: "GRU[V]BOX (Win-ish)"
+  outline: "#282828"
+  fill: "#ebdbb2"
+  cursors: "win-ish"
+
+win-ish-classic:
+  name: "CLASSIC (Win-Ish)"
+  outline: "#000000"
+  fill: "#FFFFFF"
+  cursors: "win-ish"
+
+win-ish-inverted:
+  name: "INVERTED (Win-Ish)"
+  outline: "#FFFFFF"
+  fill: "#000000"
+  cursors: "win-ish"
+
+win-ish-rose_pine:
+  name: "ROSE PINE (Win-ish)"
+  outline: "#191724"
+  fill: "#e0def4"
+  cursors: "win-ish"
+
+win-ish-solarized_dark:
+  name: "SOLARIZED DARK (Win-ish)"
+  outline: "#002b36"
+  fill: "#93a1a1"
+  cursors: "win-ish"

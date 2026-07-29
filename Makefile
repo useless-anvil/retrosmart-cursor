@@ -1,10 +1,10 @@
 PKGNAME := xcursor-retrosmart
-VERSION := 3.1a
+VERSION := 1.1.0
 
 # Everything actually happens in build.sh — see that file for the pipeline.
 # This Makefile is just a familiar `make` / `make clean` front door for it.
 
-.PHONY: all clean xpm png in cursors
+.PHONY: all clean xpm png in cursors previews
 
 all:
 	./build.sh all
@@ -13,7 +13,7 @@ clean:
 	./build.sh clean
 
 xpm:
-	./build.sh xpm
+	./build.sh png
 
 png:
 	./build.sh png
@@ -23,3 +23,6 @@ in:
 
 cursors:
 	./build.sh cursors
+
+previews:
+	python3 tools/generate_previews.py

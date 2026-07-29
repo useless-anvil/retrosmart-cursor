@@ -1,14 +1,18 @@
 # hotspots.yaml -- one entry per cursor, tweak x/y to move the click point
 #
-# x, y   = pixel offset from the top-left of the 32px image (0,0 = top-left corner)
-# delay  = frame delay in ms, only needed for animated cursors (progress, wait)
+# x, y      = pixel offset from the top-left of the 32px image (0,0 = top-left corner)
+# delay     = frame delay in ms, only needed for animated cursors (progress, wait)
+# overrides = optional, per-style x/y overrides when a style's art needs a
+#             different hotspot than the default (e.g. {win-ish: {x: 5, y: 0}}).
+#             Only the given style(s) are affected; everything else still
+#             uses the top-level x/y.
 #
 # Cursors are grouped under headings just for readability; the group names
 # themselves aren't read by the build, only "name/size/x/y/file/delay" are.
 
 Basic / System:
   - {name: default,       size: 32, x:  0, y:  0, file: 32-default.png}
-  - {name: pointer,       size: 32, x:  4, y:  0, file: 32-pointer.png}
+  - {name: pointer,       size: 32, x:  3, y:  0, file: 32-pointer.png, overrides: {win-ish: {x: 5, y: 0}}}
   - {name: context-menu,  size: 32, x:  0, y:  0, file: 32-context-menu.png}
   - {name: help,          size: 32, x:  0, y:  0, file: 32-help.png}
   - {name: progress,      size: 32, x:  0, y:  0, file: 32-progress1.png, delay: 50}
