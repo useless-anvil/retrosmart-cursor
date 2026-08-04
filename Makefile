@@ -1,5 +1,5 @@
 PKGNAME := xcursor-retrosmart
-VERSION := 1.1.0
+VERSION := 1.1.1
 
 # Everything actually happens in build.sh — see that file for the pipeline.
 # This Makefile is just a familiar `make` / `make clean` front door for it.

@@ -2,10 +2,10 @@
 #
 # x, y      = pixel offset from the top-left of the 32px image (0,0 = top-left corner)
 # delay     = frame delay in ms, only needed for animated cursors (progress, wait)
-# overrides = optional, per-style x/y overrides when a style's art needs a
-#             different hotspot than the default (e.g. {win-ish: {x: 5, y: 0}}).
-#             Only the given style(s) are affected; everything else still
-#             uses the top-level x/y.
+# overrides = optional, per-style overrides of any of x/y/delay when a style's
+#             art needs different values than the default (e.g. {win-ish: {x: 5, y: 0}}
+#             or {win-ish: {delay: 120}}). Only the given style(s) are affected;
+#             everything else still uses the top-level value(s).
 #
 # Cursors are grouped under headings just for readability; the group names
 # themselves aren't read by the build, only "name/size/x/y/file/delay" are.
@@ -15,7 +15,7 @@ Basic / System:
   - {name: pointer,       size: 32, x:  3, y:  0, file: 32-pointer.png, overrides: {win-ish: {x: 5, y: 0}}}
   - {name: context-menu,  size: 32, x:  0, y:  0, file: 32-context-menu.png}
   - {name: help,          size: 32, x:  0, y:  0, file: 32-help.png}
-  - {name: progress,      size: 32, x:  0, y:  0, file: 32-progress1.png, delay: 50}
+  - {name: progress,      size: 32, x:  0, y:  0, file: 32-progress1.png, delay: 50, overrides: {win-ish: {delay: 120}}}
   - {name: wait,          size: 32, x: 12, y: 12, file: 32-wait01.png,    delay: 120}
 
 Text:
@@ -27,7 +27,7 @@ Select / Edit / Draw:
   - {name: crosshair,     size: 32, x:  7, y:  7, file: 32-crosshair.png}
   - {name: color-picker,  size: 32, x:  1, y: 16, file: 32-color-picker.png}
   - {name: draft,         size: 32, x:  0, y: 17, file: 32-draft.png}
-  - {name: pencil,        size: 32, x:  0, y: 19, file: 32-pencil.png}
+  - {name: pencil,        size: 32, x:  0, y: 19, file: 32-pencil.png, overrides: {win-ish: {x: 0, y: 0}}}
   - {name: zoom-in,       size: 32, x:  5, y:  5, file: 32-zoom-in.png}
   - {name: zoom-out,      size: 32, x:  5, y:  5, file: 32-zoom-out.png}
 
@@ -36,14 +36,14 @@ Drag and Drop:
   - {name: dnd-move,      size: 32, x:  0, y:  0, file: 32-dnd-move.png}
   - {name: dnd-no-drop,   size: 32, x:  8, y:  4, file: 32-dnd-no-drop.png}
   - {name: no-drop,       size: 32, x:  0, y:  0, file: 32-no-drop.png}
-  - {name: not-allowed,   size: 32, x:  8, y:  8, file: 32-not-allowed.png}
+  - {name: not-allowed,   size: 32, x:  8, y:  8, file: 32-not-allowed.png, overrides: {win-ish: {x: 10, y: 10}}}
   - {name: alias,         size: 32, x:  0, y:  0, file: 32-alias.png}
 
 Grab / Pan:
   - {name: openhand,      size: 32, x:  9, y:  6, file: 32-openhand.png}
   - {name: closedhand,    size: 32, x:  9, y:  2, file: 32-closedhand.png}
-  - {name: fleur,         size: 32, x:  7, y:  7, file: 32-fleur.png}
-  - {name: all-scroll,    size: 32, x:  7, y:  7, file: 32-all-scroll.png}
+  - {name: fleur,         size: 32, x:  7, y:  7, file: 32-fleur.png, overrides: {win-ish: {x: 9, y: 9}}}
+  - {name: all-scroll,    size: 32, x:  7, y:  7, file: 32-all-scroll.png, overrides: {win-ish: {x: 9, y: 9}}}
 
 Edge Resize:
   - {name: top_side,      size: 32, x:  7, y:  0, file: 32-top_side.png}
@@ -58,18 +58,18 @@ Corner Resize:
   - {name: bottom_right_corner, size: 32, x: 23, y: 23, file: 32-bottom_right_corner.png}
 
 Generic Resize / Split:
-  - {name: size_hor,      size: 32, x:  7, y:  3, file: 32-size_hor.png}
-  - {name: size_ver,      size: 32, x:  3, y:  7, file: 32-size_ver.png}
-  - {name: size_bdiag,    size: 32, x:  6, y:  6, file: 32-size_bdiag.png}
-  - {name: size_fdiag,    size: 32, x:  6, y:  6, file: 32-size_fdiag.png}
-  - {name: col-resize,    size: 32, x:  8, y:  7, file: 32-col-resize.png}
-  - {name: row-resize,    size: 32, x:  7, y:  7, file: 32-row-resize.png}
+  - {name: size_hor,      size: 32, x:  7, y:  3, file: 32-size_hor.png, overrides: {win-ish: {x: 9, y: 4}}}
+  - {name: size_ver,      size: 32, x:  3, y:  7, file: 32-size_ver.png, overrides: {win-ish: {x: 4, y: 9}}}
+  - {name: size_bdiag,    size: 32, x:  6, y:  6, file: 32-size_bdiag.png, overrides: {win-ish: {x: 7, y: 7}}}
+  - {name: size_fdiag,    size: 32, x:  6, y:  6, file: 32-size_fdiag.png, overrides: {win-ish: {x: 7, y: 7}}}
+  - {name: col-resize,    size: 32, x:  8, y:  7, file: 32-col-resize.png, overrides: {win-ish: {x: 9, y: 8}}}
+  - {name: row-resize,    size: 32, x:  7, y:  7, file: 32-row-resize.png, overrides: {win-ish: {x: 7, y: 9}}}
 
 Directional Arrows:
   - {name: up-arrow,      size: 32, x:  4, y:  0, file: 32-up-arrow.png}
-  - {name: down-arrow,    size: 32, x:  4, y: 15, file: 32-down-arrow.png}
+  - {name: down-arrow,    size: 32, x:  4, y: 15, file: 32-down-arrow.png, overrides: {win-ish: {x: 4, y: 18}}}
   - {name: left-arrow,    size: 32, x:  0, y:  4, file: 32-left-arrow.png}
-  - {name: right-arrow,   size: 32, x: 15, y:  4, file: 32-right-arrow.png}
+  - {name: right-arrow,   size: 32, x: 15, y:  4, file: 32-right-arrow.png, overrides: {win-ish: {x: 18, y: 4}}}
 
 Misc:
   - {name: center_ptr,      size: 32, x:  5, y:  0, file: 32-center_ptr.png}

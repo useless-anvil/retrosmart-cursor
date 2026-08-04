@@ -20,6 +20,20 @@ original artwork and design goes to him — see [AUTHORS](AUTHORS) and
 Some of this fork's tooling and docs were put together with AI assistance.
 The cursor artwork itself is hand-drawn/hand-edited pixel art.
 
+## Downloads
+
+Releases are packaged into 4 archives — pick your platform and whether you
+want the classic black/white looks or the full extra-color set:
+
+| Archive | Contains |
+|---|---|
+| `retrosmart-cursor-classic-<version>-linux.tar.gz` | Classic + Inverted schemes, X11 (Mac-ish & Win-ish, plain + shadow) |
+| `retrosmart-cursor-classic-<version>-windows.zip` | Classic + Inverted schemes, Windows `.cur`/`.ani` |
+| `retrosmart-cursor-extras-<version>-linux.tar.gz` | All other color schemes (Catppuccin, Everforest, Gruvbox, Rosé Pine, Solarized Dark, …), X11 |
+| `retrosmart-cursor-extras-<version>-windows.zip` | Same extra schemes, Windows `.cur`/`.ani` |
+
+Grab both archives for your OS if you want everything.
+
 ## Previews
 
 ### Mac-ish Styles

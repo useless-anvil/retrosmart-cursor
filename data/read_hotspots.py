@@ -7,8 +7,8 @@ Output columns: name  size  x  y  file  delay
 A cursor entry can optionally carry a per-style "overrides" map, e.g.:
     - {name: pointer, size: 32, x: 3, y: 0, file: 32-pointer.png,
        overrides: {win-ish: {x: 5, y: 0}}}
-When a style is passed as the 2nd argument and it has an override, its x/y
-(either or both) replace the default for that row only.
+When a style is passed as the 2nd argument and it has an override, its
+x/y/delay (any subset) replace the defaults for that row only.
 
 Usage: read_hotspots.py path/to/hotspots.yaml [style]
 """
@@ -38,12 +38,15 @@ def main() -> int:
                 )
                 return 1
 
+            delay = c.get("delay", "")
+
             override = (c.get("overrides") or {}).get(style) if style else None
             if override:
                 x = override.get("x", x)
                 y = override.get("y", y)
+                delay = override.get("delay", delay)
 
-            fields = [name, size, x, y, file_, c.get("delay", "")]
+            fields = [name, size, x, y, file_, delay]
             print("\t".join(str(v) for v in fields))
 
     return 0
