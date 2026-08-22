@@ -11,11 +11,11 @@ original artwork and design goes to him — see [AUTHORS](AUTHORS) and
 
 ## What's new in this fork
 
-- **Multiple Cursor Styles**: Includes both `mac-ish` and `win-ish` cursor styles (`src/base/`).
+- **Multiple Cursor Styles**: Includes `mac-ish`, `win-ish`, and `cur-font` cursor styles (`src/base/`).
 - **HiDPI Support**: New sizes (32px, 64px, and 128px), rendered cleanly via nearest-neighbor scaling.
 - **Unified Color Schemes**: Master configuration in `schemes.yaml` using clean `outline` and `fill` color fields.
 - **Streamlined Multi-Core Build**: In-memory streaming directly to PNGs (no intermediate XPM files on disk) with parallel CPU execution (`nproc`).
-- **Theme Variants**: 14 distinct color schemes, each with plain and drop-shadow versions.
+- **Theme Variants**: 24 distinct theme variants (8 color schemes across 3 styles), each with plain and drop-shadow versions.
 
 Some of this fork's tooling and docs were put together with AI assistance.
 The cursor artwork itself is hand-drawn/hand-edited pixel art.
@@ -45,6 +45,7 @@ Grab both archives for your OS if you want everything.
 ![Mac-ish Gruvbox](media/mac-ish-gruvbox.png)
 ![Mac-ish Rose Pine](media/mac-ish-rose_pine.png)
 ![Mac-ish Solarized Dark](media/mac-ish-solarized_dark.png)
+![Mac-ish Violet](media/mac-ish-violet.png)
 
 ### Win-ish Styles
 
@@ -55,6 +56,7 @@ Grab both archives for your OS if you want everything.
 ![Win-ish Gruvbox](media/win-ish-gruvbox.png)
 ![Win-ish Rose Pine](media/win-ish-rose_pine.png)
 ![Win-ish Solarized Dark](media/win-ish-solarized_dark.png)
+![Win-ish Violet](media/win-ish-violet.png)
 
 ### Cur-font Styles
 
