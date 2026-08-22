@@ -56,6 +56,17 @@ Grab both archives for your OS if you want everything.
 ![Win-ish Rose Pine](media/win-ish-rose_pine.png)
 ![Win-ish Solarized Dark](media/win-ish-solarized_dark.png)
 
+### Cur-font Styles
+
+![Cur-font Classic](media/cur-font-classic.png)
+![Cur-font Inverted](media/cur-font-inverted.png)
+![Cur-font Catppuccin](media/cur-font-catppucin.png)
+![Cur-font Everforest](media/cur-font-everforest.png)
+![Cur-font Gruvbox](media/cur-font-gruvbox.png)
+![Cur-font Rose Pine](media/cur-font-rose_pine.png)
+![Cur-font Solarized Dark](media/cur-font-solarized_dark.png)
+![Cur-font Violet](media/cur-font-violet.png)
+
 ## Requirements
 
 - `bash`

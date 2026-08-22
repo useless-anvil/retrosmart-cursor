@@ -2,51 +2,56 @@
 #
 # Each scheme specifies:
 #   name:     Display name used in index.theme
-#   name_es:  Optional Spanish display name (defaults to name)
 #   outline:  Outline color (replaces cyan #00FFFF in xpm sources)
 #   fill:     Fill color (replaces coral #FF7F50 in xpm sources)
 #   cursors:  Which src/base/<style>/ folder to use for cursor artwork
 
 mac-ish-catppucin:
   name: "CATPPUCCIN (Mac-ish)"
-  outline: "#1e1e2e"
-  fill: "#cdd6f4"
+  outline: "#cdd6f4"
+  fill: "#1e1e2e"
   cursors: "mac-ish"
 
 mac-ish-everforest:
   name: "EVERFOREST (Mac-ish)"
-  outline: "#2d353b"
-  fill: "#d3c6aa"
+  outline: "#d3c6aa"
+  fill: "#2d353b"
   cursors: "mac-ish"
 
 mac-ish-gruvbox:
   name: "GRU[V]BOX (Mac-ish)"
-  outline: "#282828"
-  fill: "#ebdbb2"
+  outline: "#ebdbb2"
+  fill: "#282828"
   cursors: "mac-ish"
 
 mac-ish-inverted:
   name: "INVERTED (Mac-ish)"
-  outline: "#FFFFFF"
-  fill: "#000000"
-  cursors: "mac-ish"
-
-mac-ish-classic:
-  name: "Classic (Mac-ish)"
   outline: "#000000"
   fill: "#FFFFFF"
   cursors: "mac-ish"
 
+mac-ish-classic:
+  name: "Classic (Mac-ish)"
+  outline: "#FFFFFF"
+  fill: "#000000"
+  cursors: "mac-ish"
+
 mac-ish-rose_pine:
   name: "ROSE PINE (Mac-ish)"
-  outline: "#191724"
-  fill: "#e0def4"
+  outline: "#e0def4"
+  fill: "#191724"
   cursors: "mac-ish"
 
 mac-ish-solarized_dark:
   name: "SOLARIZED DARK (Mac-ish)"
-  outline: "#002b36"
-  fill: "#93a1a1"
+  outline: "#93a1a1"
+  fill: "#002b36"
+  cursors: "mac-ish"
+
+mac-ish-violet:
+  name: "VIOLET (Mac-ish)"
+  outline: "#8563c5"
+  fill: "#000000"
   cursors: "mac-ish"
 
 win-ish-catppucin:
@@ -90,3 +95,57 @@ win-ish-solarized_dark:
   outline: "#002b36"
   fill: "#93a1a1"
   cursors: "win-ish"
+
+win-ish-violet:
+  name: "VIOLET (Win-ish)"
+  outline: "#8563c5"
+  fill: "#000000"
+  cursors: "win-ish"
+
+cur-font-catppucin:
+  name: "CATPPUCCIN (Cur-font)"
+  outline: "#cdd6f4"
+  fill: "#1e1e2e"
+  cursors: "cur-font"
+
+cur-font-everforest:
+  name: "EVERFOREST (Cur-font)"
+  outline: "#d3c6aa"
+  fill: "#2d353b"
+  cursors: "cur-font"
+
+cur-font-gruvbox:
+  name: "GRU[V]BOX (Cur-font)"
+  outline: "#ebdbb2"
+  fill: "#282828"
+  cursors: "cur-font"
+
+cur-font-inverted:
+  name: "INVERTED (Cur-font)"
+  outline: "#000000"
+  fill: "#FFFFFF"
+  cursors: "cur-font"
+
+cur-font-classic:
+  name: "Classic (Cur-font)"
+  outline: "#FFFFFF"
+  fill: "#000000"
+  cursors: "cur-font"
+
+cur-font-rose_pine:
+  name: "ROSE PINE (Cur-font)"
+  outline: "#e0def4"
+  fill: "#191724"
+  cursors: "cur-font"
+
+cur-font-solarized_dark:
+  name: "SOLARIZED DARK (Cur-font)"
+  outline: "#93a1a1"
+  fill: "#002b36"
+  cursors: "cur-font"
+
+cur-font-violet:
+  name: "VIOLET (Cur-font)"
+  outline: "#8563c5"
+  fill: "#000000"
+  cursors: "cur-font"
