@@ -6,9 +6,8 @@ This started as a personal tweak of
 [mdomlop/retrosmart-x11-cursors](https://github.com/mdomlop/retrosmart-x11-cursors)
 and evolved into a comprehensive port and rebuild of the packaging/build pipeline:
 - Added HiDPI cursor sizes (32px, 64px, 128px).
-- Expanded styles to include both Mac-ish and Win-ish cursor designs.
+- Expanded styles to include both Mac-ish, Win-ish and Cur-font cursor designs.
 - Consolidated color scheme management into a single master `schemes.yaml` file with clear `outline` and `fill` definitions.
-- Automated preview generation for all variants and Pling store listings.
 
 The core cursor designs honor Manuel Domínguez López's original artwork while adapting them for multi-style, multi-platform releases.
 
