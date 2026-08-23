@@ -13,7 +13,7 @@
 #         |  2. hotspots   -> artifacts/in/<style>/<cursor>     (from data/hotspots.yaml)
 #         |  3. xcursorgen -> build_themes/Linux/<theme>/cursors/<cursor> (real binary cursor)
 #         |  4. aliases    -> build_themes/Linux/<theme>/cursors/<alias>  (symlinks, from data/links.txt)
-#         -  5. theme meta -> build_themes/Linux/<theme>/index.theme (src/themes/*.theme, or auto-generated)
+#         -  5. theme meta -> build_themes/Linux/<theme>/index.theme (auto-generated)
 
 set -euo pipefail
 
@@ -22,9 +22,8 @@ cd "$ROOT"
 
 ARTIFACTS="$ROOT/artifacts"
 BUILD_THEMES="$ROOT/build_themes"
-SRC_BASE="$ROOT/src/base"
+SRC_BASE="$ROOT/src"
 SRC_SHARED="$SRC_BASE/shared"
-SRC_THEMES="$ROOT/src/themes"
 HOTSPOTS="$ROOT/data/hotspots.yaml"
 READ_HOTSPOTS="$ROOT/data/read_hotspots.py"
 LINKS="$ROOT/data/links.txt"
@@ -213,7 +212,7 @@ step_in() {
 
 process_theme_cursors() {
   local entry="$1"
-  local theme outline fill has_shadow style cdir name link target theme_file
+  local theme outline fill has_shadow style cdir name link target
   IFS=: read -r theme outline fill has_shadow <<<"$entry"
   style="${THEME_STYLE[$theme]}"
   cdir="$BUILD_THEMES/Linux/$theme/cursors"
@@ -230,18 +229,13 @@ process_theme_cursors() {
     ln -sf "$target" "$cdir/$link"
   done < "$LINKS"
 
-  theme_file="$SRC_THEMES/$theme.theme"
-  if [ -f "$theme_file" ]; then
-    cp "$theme_file" "$BUILD_THEMES/Linux/$theme/index.theme"
-  else
-    cat > "$BUILD_THEMES/Linux/$theme/index.theme" <<EOF
+  cat > "$BUILD_THEMES/Linux/$theme/index.theme" <<EOF
 [Icon Theme]
 Name=${THEME_NAME[$theme]}
 Name[es]=${THEME_NAME_ES[$theme]}
 Comment=Retrosmart cursor theme
 Comment[es]=Tema de cursores Retrosmart
 EOF
-  fi
   cp "$ARTIFACTS/png/$theme/128-default.png" "$cdir/thumbnail.png"
 }
 

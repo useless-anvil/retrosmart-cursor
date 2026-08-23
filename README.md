@@ -2,8 +2,6 @@
 
 # Retrosmart Xcursor (fork)
 
-An "8-bit-esque" X11 & Windows cursor theme collection, featuring classic OS X ("Mac-ish") and vintage Windows ("Win-ish") styles.
-
 This is a fork of [retrosmart-x11-cursors](https://github.com/mdomlop/retrosmart-x11-cursors)
 by [Manuel Domínguez López](https://github.com/mdomlop). Credit for the
 original artwork and design goes to him — see [AUTHORS](AUTHORS) and
@@ -27,7 +25,7 @@ want the classic black/white looks or the full extra-color set:
 
 | Archive | Contains |
 |---|---|
-| `retrosmart-cursor-classic-<version>-linux.tar.gz` | Classic + Inverted schemes, X11 (Mac-ish & Win-ish, plain + shadow) |
+| `retrosmart-cursor-classic-<version>-linux.tar.gz` | Classic + Inverted schemes, X11 (Mac-ish, Win-ish and Cur-font, plain + shadow) |
 | `retrosmart-cursor-classic-<version>-windows.zip` | Classic + Inverted schemes, Windows `.cur`/`.ani` |
 | `retrosmart-cursor-extras-<version>-linux.tar.gz` | All other color schemes (Catppuccin, Everforest, Gruvbox, Rosé Pine, Solarized Dark, …), X11 |
 | `retrosmart-cursor-extras-<version>-windows.zip` | Same extra schemes, Windows `.cur`/`.ani` |
