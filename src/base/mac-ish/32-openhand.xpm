@@ -2,8 +2,8 @@
 static char *_2_openhand[] = {
 "32 32 3 1 ",
 "  c None",
-". c #00FFFF",
-"X c #FF7F50",
+". c #FF7F50",
+"X c #00FFFF",
 "       ..                       ",
 "   .. .XX...                    ",
 "  .XX..XX.XX.                   ",
