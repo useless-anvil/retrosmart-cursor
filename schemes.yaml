@@ -4,7 +4,7 @@
 #   name:     Display name used in index.theme
 #   outline:  Outline color (replaces cyan #00FFFF in xpm sources)
 #   fill:     Fill color (replaces coral #FF7F50 in xpm sources)
-#   cursors:  Which src/base/<style>/ folder to use for cursor artwork
+#   cursors:  Which src/<style>/ folder to use for cursor artwork
 
 mac-ish-catppucin:
   name: "CATPPUCCIN (Mac-ish)"
@@ -73,13 +73,13 @@ win-ish-gruvbox:
   cursors: "win-ish"
 
 win-ish-classic:
-  name: "CLASSIC (Win-Ish)"
+  name: "Classic (Win-ish)"
   outline: "#000000"
   fill: "#FFFFFF"
   cursors: "win-ish"
 
 win-ish-inverted:
-  name: "INVERTED (Win-Ish)"
+  name: "INVERTED (Win-ish)"
   outline: "#FFFFFF"
   fill: "#000000"
   cursors: "win-ish"

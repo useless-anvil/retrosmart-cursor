@@ -4,7 +4,7 @@ VERSION := v1.2.2
 # Everything actually happens in build.sh — see that file for the pipeline.
 # This Makefile is just a familiar `make` / `make clean` front door for it.
 
-.PHONY: all clean xpm png in cursors previews
+.PHONY: all clean xpm png in cursors
 
 all:
 	./build.sh all

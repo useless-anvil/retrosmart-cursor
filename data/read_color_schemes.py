@@ -8,7 +8,7 @@ schemes.yaml describes color schemes AND which cursor style each scheme renders 
       name_es: "Catppuccin"        # optional, Spanish display name, defaults to `name`
       outline: "#1e1e2e"          # outline color (replaces the xpm's cyan #00FFFF)
       fill: "#cdd6f4"             # fill color    (replaces the xpm's coral #FF7F50)
-      cursors: "mac-ish"          # required: which src/base/<style>/ folder to use
+      cursors: "mac-ish"          # required: which src/<style>/ folder to use
 
 Output columns (one row per scheme):
     id  outline  fill  name  name_es  cursors

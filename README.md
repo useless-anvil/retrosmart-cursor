@@ -9,7 +9,7 @@ original artwork and design goes to him — see [AUTHORS](AUTHORS) and
 
 ## What's new in this fork
 
-- **Multiple Cursor Styles**: Includes `mac-ish`, `win-ish`, and `cur-font` cursor styles (`src/base/`).
+- **Multiple Cursor Styles**: Includes `mac-ish`, `win-ish`, and `cur-font` cursor styles (`src/`).
 - **HiDPI Support**: New sizes (32px, 64px, and 128px), rendered cleanly via nearest-neighbor scaling.
 - **Unified Color Schemes**: Master configuration in `schemes.yaml` using clean `outline` and `fill` color fields.
 - **Streamlined Multi-Core Build**: In-memory streaming directly to PNGs (no intermediate XPM files on disk) with parallel CPU execution (`nproc`).
@@ -78,13 +78,13 @@ Grab both archives for your OS if you want everything.
 
 ```sh
 git clone https://github.com/useless-anvil/retrosmart-cursor.git
-cd retrosmart_source
+cd retrosmart-cursor
 make            # or: ./build.sh all
 ```
 
 This runs the full pipeline:
 
-1. **Recolors, upscales, and rasterizes**: Streams the 32px sources in `src/base/` through in-memory recoloring (`outline`/`fill`), nearest-neighbor upscaling (32px, 64px, 128px), and optional drop-shadow effects straight into PNGs (no intermediate `.xpm` files written to disk).
+1. **Recolors, upscales, and rasterizes**: Streams the 32px sources in `src/` through in-memory recoloring (`outline`/`fill`), nearest-neighbor upscaling (32px, 64px, 128px), and optional drop-shadow effects straight into PNGs (no intermediate `.xpm` files written to disk).
 2. **Generates hotspot configs**: Creates `xcursorgen` input files from `data/hotspots.yaml`.
 3. **Builds binary cursors**: Generates final X11 cursor binaries, symlinked aliases (from `data/links.txt`), and `index.theme` files.
 
@@ -100,7 +100,7 @@ Other build targets:
 ```
 
 - To tweak theme palettes: edit `schemes.yaml`.
-- To change how a cursor looks: edit its file(s) in `src/base/` (32px only).
+- To change how a cursor looks: edit its file(s) in `src/` (32px only).
 - To change a cursor's hotspot (click point): edit `data/hotspots.yaml`.
 
 ## License

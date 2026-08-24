@@ -5,7 +5,7 @@
 # Pipeline (output goes into ./artifacts/png, ./artifacts/in, and ./build_themes):
 #
 #   schemes.yaml (outline/fill hex colors + cursor style, master definition)
-#   src/base/<style>/ + src/base/shared/  (32px hand-drawn XPM sources)
+#   src/<style>/ + src/shared/  (32px hand-drawn XPM sources)
 #         |  0. load       -> THEMES (in-memory)
 #         |  1. png        -> artifacts/png/<theme>/{32,64,128}-*.png
 #         |                   (in-memory sed recolor -> ImageMagick upscale & shadow straight to PNG;

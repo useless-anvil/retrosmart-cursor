@@ -13,7 +13,7 @@ The core cursor designs honor Manuel Domínguez López's original artwork while 
 
 ## On AI assistance
 
-Build scripts, automation tools, and documentation were refined with AI assistance. The cursor artwork in `src/base/` remains hand-drawn pixel art.
+Build scripts, automation tools, and documentation were refined with AI assistance. The cursor artwork in `src/` remains hand-drawn pixel art.
 
 ## On the wording in the README
 
