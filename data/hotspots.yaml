@@ -14,7 +14,7 @@ Basic / System:
   - {name: default,       size: 32, x:  0, y:  0, file: 32-default.png}
   - {name: pointer,       size: 32, x:  3, y:  0, file: 32-pointer.png, overrides: {win-ish: {x: 5, y: 0}}}
   - {name: context-menu,  size: 32, x:  0, y:  0, file: 32-context-menu.png}
-  - {name: help,          size: 32, x:  0, y:  0, file: 32-help.png, overrides: {cur-font: {x: 5, y: 16}}}
+  - {name: help,          size: 32, x:  0, y:  0, file: 32-help.png, overrides: {cur-font: {x: 5, y: 14}}}
   - {name: progress,      size: 32, x:  0, y:  0, file: 32-progress1.png, delay: 50, overrides: {win-ish: {delay: 120}, cur-font: {x: 12, y: 13}}}
   - {name: wait,          size: 32, x: 12, y: 12, file: 32-wait01.png,    delay: 120}
 
