@@ -13,8 +13,7 @@ original artwork and design goes to him — see [AUTHORS](AUTHORS) and
 - **HiDPI Support**: New sizes (32px, 64px, and 128px), rendered cleanly via nearest-neighbor scaling.
 - **Unified Color Schemes**: Master configuration in `schemes.yaml` (`outline` / `fill` for most styles; `accent` for win-3d).
 - **Streamlined Multi-Core Build**: In-memory streaming directly to PNGs (no intermediate XPM files on disk) with parallel CPU execution (`nproc`). Builds X11 and Windows themes.
-- **Theme Variants**: 28 color schemes (8× mac-ish / win-ish / cur-font + 4 win-3d). Each builds plain + drop-shadow (56). Win-3D also auto-discovers `src/win-3d/alt/` wait sets (hourglass, hand_stopwatch) → 72 installable themes total.
-- **Alternate busy animations**: Extra wait frame sets under `src/<style>/alt/<name>/` become their own themes automatically (same colors, different busy cursor).
+- **Theme Variants**: 28 color schemes (8× mac-ish / win-ish / cur-font + 4 win-3d), plain and drop-shadow — 72 installable themes total.
 
 Some of this fork's tooling and docs were put together with AI assistance.
 The cursor artwork itself is hand-drawn/hand-edited pixel art.
@@ -28,7 +27,7 @@ want the classic black/white looks or the full extra-color set:
 |---|---|
 | `retrosmart-cursor-classic-<version>-linux.tar.gz` | Classic + Inverted schemes, X11 (Mac-ish, Win-ish, Cur-font; plain + shadow) |
 | `retrosmart-cursor-classic-<version>-windows.zip` | Classic + Inverted schemes, Windows `.cur`/`.ani` |
-| `retrosmart-cursor-extras-<version>-linux.tar.gz` | All other color schemes (Catppuccin, Everforest, Gruvbox, Rose Pine, Solarized Dark, …) plus Win-3D (red/green/blue/violet, incl. wait alts), X11 |
+| `retrosmart-cursor-extras-<version>-linux.tar.gz` | All other color schemes (Catppuccin, Everforest, Gruvbox, Rose Pine, Solarized Dark, …) plus Win-3D, X11 |
 | `retrosmart-cursor-extras-<version>-windows.zip` | Same extra schemes (incl. Win-3D), Windows `.cur`/`.ani` |
 
 Grab both archives for your OS if you want everything.
@@ -85,9 +84,7 @@ Grab both archives for your OS if you want everything.
 ![Win-3D Blue Hand Stopwatch](media/win-3d-blue-hand_stopwatch.png)
 ![Win-3D Violet Hand Stopwatch](media/win-3d-violet-hand_stopwatch.png)
 
-Win-3D sheets include the default busy set plus Hourglass and Hand Stopwatch
-wait variants. Regenerate any preview with `python3 tools/generate_previews.py`
-after `./build.sh png`.
+Regenerate preview sheets with `python3 tools/generate_previews.py` after `./build.sh png`.
 
 ## Requirements
 
@@ -106,13 +103,13 @@ make            # or: ./build.sh all
 
 This runs the full pipeline:
 
-1. **Palette check**: Warns on stray/near-miss colors in `src/` XPMs (GIMP sometimes writes `#FF7E48` instead of `#FF7F50`, etc.).
+1. **Palette check**: Warns on unrecognized colors in `src/` XPMs.
 2. **Recolors, upscales, and rasterizes**: Streams the 32px sources through in-memory recoloring (`outline`/`fill`, or win-3d `accent` + auto shadow), nearest-neighbor upscaling (32px, 64px, 128px), and optional drop-shadow effects straight into PNGs.
-3. **Generates hotspot configs**: Creates `xcursorgen` input files from `data/hotspots.yaml` (per style, and per wait-alt when frame counts differ).
+3. **Generates hotspot configs**: Creates `xcursorgen` input files from `data/hotspots.yaml`.
 4. **Builds X11 cursors**: Binary cursors, aliases from `data/links.txt`, and `index.theme` under `build_themes/Linux/<style>/<theme-name>/`.
 5. **Builds Windows cursors**: `.cur` / `.ani` + `install.inf` under `build_themes/Windows/<style>/<theme-name>/` via `scripts/build_windows.py`.
 
-Output is grouped by style (`mac-ish`, `win-ish`, `cur-font`, `win-3d`). Styles with `src/<style>/alt/<name>/` wait frame sets get extra theme folders automatically.
+Output is grouped by style (`mac-ish`, `win-ish`, `cur-font`, `win-3d`).
 
 Other build targets:
 
@@ -129,11 +126,11 @@ Preview sheets for README / store listings:
 
 ```sh
 ./build.sh png
-python3 tools/generate_previews.py   # writes media/<scheme>.png (+ wait-alt sheets)
+python3 tools/generate_previews.py   # writes media/<scheme>.png
 ```
 
 - To tweak theme palettes: edit `schemes.yaml` (`outline`/`fill`, or `accent` for win-3d).
-- To change how a cursor looks: edit its file(s) in `src/<style>/` (32px only). Alternate busy sets live in `src/<style>/alt/<name>/`.
+- To change how a cursor looks: edit its file(s) in `src/<style>/` (32px only).
 - To change a cursor's hotspot (click point): edit `data/hotspots.yaml`. Each
   cursor's `hotspots` map is keyed by style (`mac-ish`, `win-ish`, `cur-font`, `win-3d`, …), with
   `all` as the fallback for styles that don't need their own value.
