@@ -149,3 +149,34 @@ cur-font-violet:
   outline: "#8563c5"
   fill: "#000000"
   cursors: "cur-font"
+
+# win-3d: fixed Win95/98 3D chrome (outline/fill unused, kept as harmless
+# placeholders to satisfy the schema), only 'accent' is schemed. accent_dark
+# is always auto-derived at build time (not a yaml field).
+win-3d-red:
+  name: "RED (Win-3D)"
+  outline: "#000000"
+  fill: "#FFFFFF"
+  accent: "#FF0000"
+  cursors: "win-3d"
+
+win-3d-green:
+  name: "GREEN (Win-3D)"
+  outline: "#000000"
+  fill: "#FFFFFF"
+  accent: "#29da00"
+  cursors: "win-3d"
+
+win-3d-blue:
+  name: "BLUE (Win-3D)"
+  outline: "#000000"
+  fill: "#FFFFFF"
+  accent: "#00a8ea"
+  cursors: "win-3d"
+
+win-3d-violet:
+  name: "VIOLET (Win-3D)"
+  outline: "#000000"
+  fill: "#FFFFFF"
+  accent: "#8563c5"
+  cursors: "win-3d"

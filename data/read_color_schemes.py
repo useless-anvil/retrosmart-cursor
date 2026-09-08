@@ -11,7 +11,14 @@ schemes.yaml describes color schemes AND which cursor style each scheme renders 
       cursors: "mac-ish"          # required: which src/<style>/ folder to use
 
 Output columns (one row per scheme):
-    id  outline  fill  name  name_es  cursors
+    id  outline  fill  name  name_es  cursors  accent  accent_dark
+
+`accent` is optional (used by shaded styles like win-3d, which keep their
+chrome colors fixed and only recolor one accent hue). When present,
+`accent_dark` is always derived automatically at a fixed 0.58 brightness
+scale (matching the ratio observed in the original Win95/98 3D cursor art:
+0x94/0xFF ~= 0.58) — it is not a schemes.yaml field. When `accent` is
+absent, both columns are emitted empty.
 
 Usage: read_color_schemes.py [path/to/schemes.yaml | path/to/color_schemes_dir]
 """
@@ -22,6 +29,15 @@ from pathlib import Path
 import yaml
 
 HEX_RE = re.compile(r"^#[0-9A-Fa-f]{6}$")
+ACCENT_SCALE = 0.58
+
+
+def scale_hex(value: str, scale: float) -> str:
+    r = int(value[1:3], 16)
+    g = int(value[3:5], 16)
+    b = int(value[5:7], 16)
+    r, g, b = (max(0, min(255, round(c * scale))) for c in (r, g, b))
+    return f"#{r:02X}{g:02X}{b:02X}"
 
 
 def scheme_id(path: Path, root: Path) -> str:
@@ -64,6 +80,29 @@ def process_scheme(id_: str, scheme_data: dict, source_label: str, seen_ids: set
             )
             return False
 
+    accent = scheme_data.get("accent")
+    if "accent_dark" in scheme_data:
+        print(
+            f"error: {source_label} scheme '{id_}' has 'accent_dark' — that field was removed; "
+            f"shadow is auto-derived from 'accent' at scale {ACCENT_SCALE}",
+            file=sys.stderr,
+        )
+        return False
+
+    if accent is not None:
+        accent = str(accent)
+        if not HEX_RE.match(accent):
+            print(
+                f"error: {source_label} scheme '{id_}' field 'accent' = '{accent}' is not a "
+                f"'#RRGGBB' hex color",
+                file=sys.stderr,
+            )
+            return False
+        accent_dark = scale_hex(accent, ACCENT_SCALE)
+    else:
+        accent = ""
+        accent_dark = ""
+
     name = str(scheme_data.get("name", titlecase(id_)))
     name_es = str(scheme_data.get("name_es", name))
 
@@ -75,7 +114,7 @@ def process_scheme(id_: str, scheme_data: dict, source_label: str, seen_ids: set
         print(f"error: {source_label} scheme '{id_}' field 'cursors' = '{cursors}' must be a plain folder name", file=sys.stderr)
         return False
 
-    print("\t".join([id_, outline, fill, name, name_es, cursors]))
+    print("\t".join([id_, outline, fill, name, name_es, cursors, accent, accent_dark]))
     return True
 
 

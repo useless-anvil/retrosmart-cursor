@@ -2,11 +2,11 @@
 """
 build_win.py -- turns the PNGs already produced by build.sh
 (artifacts/png/<theme>/{32,64,128}-<name>.png) into real Windows cursor
-theme folders (build_themes/Windows/<theme>/*.cur, *.ani, install.inf).
+theme folders (build_themes/Windows/<style>/<theme>/*.cur, *.ani, install.inf).
 
 Requires build.sh to have been run first (uses its artifacts/png output
 directly -- doesn't touch src/base or re-colorize anything). Writes
-alongside build.sh's own build_themes/Linux/<theme>/ output.
+alongside build.sh's own build_themes/Linux/<style>/<theme>/ output.
 
 Usage: scripts/build_windows.py [theme-name ...]
        (no args = build every theme found in artifacts/png/)
@@ -20,10 +20,13 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from curtools import build_cur, build_ani  # noqa: E402
+sys.path.insert(0, str(ROOT / "data"))
+from hotspots_lib import SOURCE_SIZE, load_entries, resolve  # noqa: E402
 
 PNG_DIR = ROOT / "artifacts" / "png"
 OUT_DIR = ROOT / "build_themes"
 HOTSPOTS = ROOT / "data" / "hotspots.yaml"
+SCHEMES = ROOT / "schemes.yaml"
 SIZES = (32, 64, 128)
 
 # Standard 15-role Windows cursor scheme, in the exact order Windows'
@@ -63,55 +66,93 @@ def log(msg: str) -> None:
     print(f"\033[1;36m==>\033[0m {msg}")
 
 
-def load_hotspots() -> list[dict]:
+def load_scheme_styles() -> dict[str, str]:
+    """scheme id -> style (its 'cursors' field), read straight from schemes.yaml.
+
+    Needed to resolve() hotspots.yaml's per-style overrides correctly --
+    without this, every Windows theme was silently getting the "all"
+    (mac-ish-equivalent) hotspots regardless of its actual style.
+    """
     import yaml
-    groups = yaml.safe_load(HOTSPOTS.read_text()) or {}
-    rows = []
-    for cursors in groups.values():
-        for c in cursors or []:
-            rows.append(c)
-    return rows
+    data = yaml.safe_load(SCHEMES.read_text()) or {}
+    return {
+        sid: sdata.get("cursors", "mac-ish")
+        for sid, sdata in data.items()
+        if isinstance(sdata, dict)
+    }
+
+
+def style_for_theme(theme: str, scheme_styles: dict[str, str]) -> str:
+    """Map a theme folder name to its cursor style.
+
+    Theme ids are ``retrosmart-xcursor-<scheme_id>[-<wait_alt>][-shadow]``.
+    Wait-alt variants (e.g. ``win-3d-blue-hourglass``) are not themselves
+    keys in schemes.yaml, so if the exact id misses we repeatedly strip a
+    trailing ``-<token>`` until a scheme id matches.
+    """
+    scheme_id = theme
+    if scheme_id.startswith("retrosmart-xcursor-"):
+        scheme_id = scheme_id[len("retrosmart-xcursor-"):]
+    if scheme_id.endswith("-shadow"):
+        scheme_id = scheme_id[: -len("-shadow")]
+    if scheme_id in scheme_styles:
+        return scheme_styles[scheme_id]
+    parts = scheme_id.split("-")
+    while len(parts) > 1:
+        parts = parts[:-1]
+        candidate = "-".join(parts)
+        if candidate in scheme_styles:
+            return scheme_styles[candidate]
+    return "mac-ish"
 
 
 def frames_for(pdir: Path, name: str) -> list[str]:
-    """All animation frame names for `name` (progress/wait), else [name]."""
-    if name not in ("progress", "wait"):
-        return [name]
-    frames = sorted(p.stem[len(f"{SIZES[0]}-"):] for p in pdir.glob(f"{SIZES[0]}-{name}*.png"))
-    return frames
+    """Return numbered source frames for a cursor, or its single name."""
+    prefix = f"{SIZES[0]}-{name}"
+    frames = [
+        p.stem[len(f"{SIZES[0]}-") :]
+        for p in pdir.glob(f"{prefix}[0-9]*.png")
+        if p.stem[len(prefix) :].isdigit()
+    ]
+    frames.sort(key=lambda frame: int(frame[len(name) :]))
+    return frames or [name]
 
 
-def build_cursor_bytes(pdir: Path, frame: str, x: int, y: int, orig_size: int) -> bytes:
+def build_cursor_bytes(pdir: Path, frame: str, x: int, y: int) -> bytes:
     images = []
     for s in SIZES:
         img = Image.open(pdir / f"{s}-{frame}.png")
-        sx, sy = round(x * s / orig_size), round(y * s / orig_size)
+        sx, sy = round(x * s / SOURCE_SIZE), round(y * s / SOURCE_SIZE)
         images.append((img, sx, sy))
     return build_cur(images)
 
 
-def build_theme(theme: str, hotspots: list[dict]) -> None:
+def build_theme(theme: str, entries: list[dict], style: str) -> None:
     pdir = PNG_DIR / theme
     if not pdir.is_dir():
         log(f"skip {theme}: no artifacts/png/{theme} (run ./build.sh first)")
         return
-    outdir = OUT_DIR / "Windows" / theme
+    outdir = OUT_DIR / "Windows" / style / theme
     outdir.mkdir(parents=True, exist_ok=True)
-    log(f"win  : {theme}")
+    log(f"win  : {theme} (style={style})")
 
     made: dict[str, bytes] = {}   # cursor name -> raw .cur/.ani bytes
     is_ani: dict[str, bool] = {}
 
-    for c in hotspots:
-        name, size, x, y = c["name"], c["size"], c["x"], c["y"]
-        delay = c.get("delay")
+    for c in entries:
+        name = c.get("cursor")
+        if not name:
+            continue
+        values = resolve(c, style)
+        x, y = values.get("x", 0), values.get("y", 0)
+        delay = values.get("delay")
         frames = frames_for(pdir, name)
         if delay is not None and len(frames) > 1:
-            frame_curs = [build_cursor_bytes(pdir, f, x, y, size) for f in frames]
+            frame_curs = [build_cursor_bytes(pdir, f, x, y) for f in frames]
             made[name] = build_ani(frame_curs, [int(delay)] * len(frame_curs))
             is_ani[name] = True
         else:
-            made[name] = build_cursor_bytes(pdir, frames[0], x, y, size)
+            made[name] = build_cursor_bytes(pdir, frames[0], x, y)
             is_ani[name] = False
 
     def ext(nm: str) -> str:
@@ -205,12 +246,13 @@ def main() -> int:
     if not PNG_DIR.is_dir():
         print("error: artifacts/png/ not found -- run ./build.sh first", file=sys.stderr)
         return 1
-    hotspots = load_hotspots()
+    entries = load_entries(HOTSPOTS)
+    scheme_styles = load_scheme_styles()
     wanted = sys.argv[1:]
     themes = wanted if wanted else sorted(p.name for p in PNG_DIR.iterdir() if p.is_dir())
     OUT_DIR.mkdir(exist_ok=True)
     for theme in themes:
-        build_theme(theme, hotspots)
+        build_theme(theme, entries, style_for_theme(theme, scheme_styles))
     log(f"Done. Windows theme folders are in {OUT_DIR}/")
     return 0
 
