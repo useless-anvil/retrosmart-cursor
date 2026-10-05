@@ -92,8 +92,6 @@ Grab both archives for your OS if you want everything.
 ![Win-3D Blue Hand Stopwatch](media/win-3d-blue-hand_stopwatch.png)
 ![Win-3D Violet Hand Stopwatch](media/win-3d-violet-hand_stopwatch.png)
 
-Regenerate preview sheets with `python3 tools/generate_previews.py` after `./build.sh png`.
-
 ## Requirements
 
 - `bash`
