@@ -82,28 +82,21 @@ def load_scheme_styles() -> dict[str, str]:
     }
 
 
-def style_for_theme(theme: str, scheme_styles: dict[str, str]) -> str:
-    """Map a theme folder name to its cursor style.
+def split_theme(theme: str, scheme_styles: dict[str, str]) -> tuple[str, str]:
+    """Map a theme folder name to ``(style, alt)``; ``alt`` is "" for base themes.
 
-    Theme ids are ``retrosmart-xcursor-<scheme_id>[-<wait_alt>][-shadow]``.
-    Wait-alt variants (e.g. ``win-3d-blue-hourglass``) are not themselves
-    keys in schemes.yaml, so if the exact id misses we repeatedly strip a
-    trailing ``-<token>`` until a scheme id matches.
+    Theme ids are ``retrosmart-xcursor-<scheme_id>[-<alt>][-shadow]``.
+    Alt variants (e.g. ``win-3d-blue-hourglass``, ``mac-ish-<scheme>-straight_hand``)
+    are not themselves keys in schemes.yaml, so the scheme is the longest id
+    that is the whole name or a ``-``-delimited prefix of it; whatever follows
+    is the alt (the alt is what lets hotspots.yaml's ``<style>/<alt>`` keys apply).
     """
-    scheme_id = theme
-    if scheme_id.startswith("retrosmart-xcursor-"):
-        scheme_id = scheme_id[len("retrosmart-xcursor-"):]
-    if scheme_id.endswith("-shadow"):
-        scheme_id = scheme_id[: -len("-shadow")]
-    if scheme_id in scheme_styles:
-        return scheme_styles[scheme_id]
-    parts = scheme_id.split("-")
-    while len(parts) > 1:
-        parts = parts[:-1]
-        candidate = "-".join(parts)
-        if candidate in scheme_styles:
-            return scheme_styles[candidate]
-    return "mac-ish"
+    rest = theme.removeprefix("retrosmart-xcursor-").removesuffix("-shadow")
+    matches = [sid for sid in scheme_styles if rest == sid or rest.startswith(sid + "-")]
+    if not matches:
+        return "mac-ish", ""
+    sid = max(matches, key=len)
+    return scheme_styles[sid], rest[len(sid):].lstrip("-")
 
 
 def frames_for(pdir: Path, name: str) -> list[str]:
@@ -127,7 +120,7 @@ def build_cursor_bytes(pdir: Path, frame: str, x: int, y: int) -> bytes:
     return build_cur(images)
 
 
-def build_theme(theme: str, entries: list[dict], style: str) -> None:
+def build_theme(theme: str, entries: list[dict], style: str, alt: str = "") -> None:
     pdir = PNG_DIR / theme
     if not pdir.is_dir():
         log(f"skip {theme}: no artifacts/png/{theme} (run ./build.sh first)")
@@ -143,7 +136,7 @@ def build_theme(theme: str, entries: list[dict], style: str) -> None:
         name = c.get("cursor")
         if not name:
             continue
-        values = resolve(c, style)
+        values = resolve(c, style, alt)
         x, y = values.get("x", 0), values.get("y", 0)
         delay = values.get("delay")
         frames = frames_for(pdir, name)
@@ -252,7 +245,7 @@ def main() -> int:
     themes = wanted if wanted else sorted(p.name for p in PNG_DIR.iterdir() if p.is_dir())
     OUT_DIR.mkdir(exist_ok=True)
     for theme in themes:
-        build_theme(theme, entries, style_for_theme(theme, scheme_styles))
+        build_theme(theme, entries, *split_theme(theme, scheme_styles))
     log(f"Done. Windows theme folders are in {OUT_DIR}/")
     return 0
 

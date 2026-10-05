@@ -4,9 +4,15 @@
 #
 # Pipeline (output goes into ./artifacts/png, ./artifacts/in, and ./build_themes):
 #
-#   schemes.yaml (outline/fill hex colors + cursor style, master definition)
-#   src/<style>/  (32px hand-drawn XPM sources, one full set per style --
-#                  no shared/ folder; every style owns every cursor)
+#   schemes.yaml (per-scheme colors + cursor style, master definition:
+#                  outline/fill for two-color styles, accent for win-3d)
+#   src/<style>/  (32px hand-drawn XPM sources; every style owns its own
+#                  full cursor set, EXCEPT src/<style>/brighter/ overrides,
+#                  which fall back to src/shared/brighter/ when a style has
+#                  no override of its own -- see merged_xpm_list(). A style can also
+#                  carry src/<style>/alt/<name>/ folders: each one becomes an extra
+#                  theme variant per scheme, with that folder's 32-*.xpm (and its
+#                  brighter/32-*.xpm) replacing the same-named cursors of the base set)
 #         |  0. load       -> THEMES (in-memory)
 #         |  0.5 check     -> warns on stray/near-miss colors in src XPMs
 #         |                   (per-style, not per-theme; non-fatal)
@@ -14,7 +20,7 @@
 #         |                   (in-memory sed recolor -> ImageMagick upscale & shadow straight to PNG;
 #         |                   no intermediate XPM files written to disk)
 #         |  2. hotspots   -> artifacts/in/<style>/[<alt-*>/]<cursor>  (from data/hotspots.yaml;
-#         |                   wait-alt variants get their own in-dir -- frame counts differ)
+#         |                   alt variants get their own in-dir -- frame counts / hotspots can differ)
 #         |  3. xcursorgen -> build_themes/Linux/<style>/<theme>/cursors/<cursor> (real binary cursor)
 #         |  4. aliases    -> build_themes/Linux/<style>/<theme>/cursors/<alias>  (symlinks, from data/links.txt)
 #         -  5. theme meta -> build_themes/Linux/<style>/<theme>/index.theme (auto-generated)
@@ -47,11 +53,12 @@ log() { printf '\033[1;36m==>\033[0m %s\n' "$*"; }
 declare -a STYLES=()
 declare -a THEMES=()
 declare -A THEME_NAME=()
-declare -A THEME_NAME_ES=()
 declare -A THEME_STYLE=()
 declare -A THEME_ACCENT=()
 declare -A THEME_ACCENT_DARK=()
-declare -A THEME_WAIT_ALT=()   # empty = default top-level wait frames; else alt/<name>/
+declare -A THEME_BRIGHT=()     # brighter of outline/fill; brighter/-sourced cursors use it as outline
+declare -A THEME_DARK=()       # the other one; brighter/-sourced cursors use it as fill
+declare -A THEME_ALT=()        # empty = base theme; else the src/<style>/alt/<name>/ folder layered on top
 
 # Styles that use the fixed-chrome + single-accent recolor scheme instead of
 # the standard outline/fill swap. Their src/<style>/*.xpm files keep the 3D
@@ -67,10 +74,85 @@ is_accent_style() {
   return 1
 }
 
+# Resolves the effective set of 32px XPM sources for a style, applying
+# brighter/ override precedence:
+#   src/<style>/32-<name>.xpm            (highest precedence)
+#   src/<style>/brighter/32-<name>.xpm   (style-specific override)
+#   src/shared/brighter/32-<name>.xpm    (cross-style fallback override)
+# Prints one line per resolved cursor: "<name>\x1f<path>\x1f<is_bright>"
+# (is_bright is 1 when the file came from a brighter/ folder, else 0).
+#
+# With a second argument (an alt name) the alt's files are layered on top:
+#   src/<style>/alt/<alt>/32-<n>.xpm            (is_bright 0)
+#   src/<style>/alt/<alt>/brighter/32-<n>.xpm   (is_bright 1; not for accent styles)
+# An alt replaces whole cursors: if it ships wait01..wait09, every base wait
+# frame is dropped first (matching is on the name minus its trailing digits),
+# so a shorter or longer frame set can never leave stray base frames behind.
+# Without an alt, alt/ is not walked (see discover_alts).
+merged_xpm_list() {
+  local style="$1" alt="${2:-}" xpm name base
+  declare -A resolved=()
+
+  # shared/brighter is outline/fill art; accent styles (win-3d) never use it.
+  if ! is_accent_style "$style"; then
+    for xpm in "$SRC_BASE/shared/brighter"/32-*.xpm; do
+      [ -e "$xpm" ] || continue
+      name="$(basename "$xpm" .xpm | sed 's/^32-//')"
+      resolved["$name"]="$xpm"$'\x1f'"1"
+    done
+  fi
+  for xpm in "$SRC_BASE/$style/brighter"/32-*.xpm; do
+    [ -e "$xpm" ] || continue
+    name="$(basename "$xpm" .xpm | sed 's/^32-//')"
+    resolved["$name"]="$xpm"$'\x1f'"1"
+  done
+  for xpm in "$SRC_BASE/$style"/32-*.xpm; do
+    [ -e "$xpm" ] || continue
+    name="$(basename "$xpm" .xpm | sed 's/^32-//')"
+    resolved["$name"]="$xpm"$'\x1f'"0"
+  done
+
+  if [ -n "$alt" ]; then
+    local alt_dir="$SRC_BASE/$style/alt/$alt"
+    declare -A override=()
+    declare -A replaced=()
+    if ! is_accent_style "$style"; then
+      for xpm in "$alt_dir/brighter"/32-*.xpm; do
+        [ -e "$xpm" ] || continue
+        name="$(basename "$xpm" .xpm | sed 's/^32-//')"
+        override["$name"]="$xpm"$'\x1f'"1"
+      done
+    fi
+    for xpm in "$alt_dir"/32-*.xpm; do
+      [ -e "$xpm" ] || continue
+      name="$(basename "$xpm" .xpm | sed 's/^32-//')"
+      override["$name"]="$xpm"$'\x1f'"0"
+    done
+    for name in "${!override[@]}"; do
+      replaced["${name%"${name##*[!0-9]}"}"]=1
+    done
+    for name in "${!resolved[@]}"; do
+      base="${name%"${name##*[!0-9]}"}"
+      if [ -n "${replaced[$base]:-}" ]; then
+        unset -v 'resolved[$name]'
+      fi
+    done
+    for name in "${!override[@]}"; do
+      resolved["$name"]="${override[$name]}"
+    done
+  fi
+
+  for name in "${!resolved[@]}"; do
+    printf '%s\x1f%s\n' "$name" "${resolved[$name]}"
+  done
+}
+
 # Scans a style's XPM sources for colors outside its allowed placeholder
 # palette. Warns (does not fail the build) -- catches stray/near-miss hex
 # values that sed's literal recolor substitution will silently skip over.
-# Mirrors tools/preflight.py's check_palette(); keep the two in sync.
+# Related to tools/preflight.py's check_palette(), but NOT identical: this
+# one also walks src/<style>/alt/*/ , preflight currently only globs the
+# style root. Fix preflight before claiming they're in sync.
 check_style_palette() {
   local style="$1" allowed_re xpm color base
   if is_accent_style "$style"; then
@@ -79,9 +161,12 @@ check_style_palette() {
     allowed_re='^(NONE|#00FFFF|#FF7F50)$'
   fi
   declare -A seen=()
-  local -a xpm_globs=("$SRC_BASE/$style"/32-*.xpm)
+  local -a xpm_globs=("$SRC_BASE/$style"/32-*.xpm "$SRC_BASE/$style/brighter"/32-*.xpm)
+  if ! is_accent_style "$style"; then
+    xpm_globs+=("$SRC_BASE/shared/brighter"/32-*.xpm)
+  fi
   if [ -d "$SRC_BASE/$style/alt" ]; then
-    xpm_globs+=("$SRC_BASE/$style"/alt/*/32-*.xpm)
+    xpm_globs+=("$SRC_BASE/$style"/alt/*/32-*.xpm "$SRC_BASE/$style"/alt/*/brighter/32-*.xpm)
   fi
   for xpm in "${xpm_globs[@]}"; do
     [ -e "$xpm" ] || continue
@@ -135,29 +220,32 @@ _with_alt_label() {
   fi
 }
 
-# List wait-alt folder names under src/<style>/alt/* that contain 32-wait*.xpm.
-discover_wait_alts() {
-  local style="$1" d
+# List alt folder names under src/<style>/alt/* that carry at least one
+# 32-*.xpm (directly or under brighter/). Wait animations and single-cursor
+# swaps (e.g. mac-ish/alt/straight_hand) are discovered the same way.
+discover_alts() {
+  local style="$1" d f found
   local alt_root="$SRC_BASE/$style/alt"
   [ -d "$alt_root" ] || return 0
   for d in "$alt_root"/*/; do
     [ -d "$d" ] || continue
-    local has_wait=0
-    for f in "$d"32-wait*.xpm; do
-      [ -e "$f" ] || break
-      has_wait=1
+    found=0
+    for f in "$d"32-*.xpm "$d"brighter/32-*.xpm; do
+      [ -e "$f" ] || continue
+      found=1
       break
     done
-    [ "$has_wait" -eq 1 ] || continue
-    basename "${d%/}"
+    if [ "$found" -eq 1 ]; then
+      basename "${d%/}"
+    fi
   done
 }
 
-# artifacts/in path for a (style, wait_alt) pair.
+# artifacts/in path for a (style, alt) pair.
 in_dir_for() {
-  local style="$1" wait_alt="${2:-}"
-  if [ -n "$wait_alt" ]; then
-    printf '%s\n' "$ARTIFACTS/in/$style/alt-$wait_alt"
+  local style="$1" alt="${2:-}"
+  if [ -n "$alt" ]; then
+    printf '%s\n' "$ARTIFACTS/in/$style/alt-$alt"
   else
     printf '%s\n' "$ARTIFACTS/in/$style"
   fi
@@ -168,37 +256,47 @@ SHADOW_COLOR="#000000"
 build_theme_list() {
   THEMES=()
   THEME_NAME=()
-  THEME_NAME_ES=()
   THEME_STYLE=()
   THEME_ACCENT=()
   THEME_ACCENT_DARK=()
-  THEME_WAIT_ALT=()
+  THEME_BRIGHT=()
+  THEME_DARK=()
+  THEME_ALT=()
   STYLES=()
   declare -A seen_styles=()
-  local id outline fill name name_es style accent accent_dark base shadow_theme
-  local altname alt_label alt_name alt_name_es alt_base alt_shadow
+  local id outline fill bright dark name style accent accent_dark base shadow_theme
+  local altname alt_label alt_name alt_base alt_shadow
 
   _register_theme_pair() {
-    local base="$1" outline="$2" fill="$3" name="$4" name_es="$5" style="$6" accent="$7" accent_dark="$8" wait_alt="$9"
+    local base="$1" outline="$2" fill="$3" bright="$4" dark="$5" name="$6" style="$7" accent="$8" accent_dark="$9" alt="${10}"
     local shadow_theme="${base}-shadow"
     THEMES+=("$base:$outline:$fill:0")
     THEME_NAME["$base"]="Retrosmart $name"
-    THEME_NAME_ES["$base"]="Retrosmart $name_es"
     THEME_STYLE["$base"]="$style"
     THEME_ACCENT["$base"]="$accent"
     THEME_ACCENT_DARK["$base"]="$accent_dark"
-    THEME_WAIT_ALT["$base"]="$wait_alt"
+    THEME_BRIGHT["$base"]="$bright"
+    THEME_DARK["$base"]="$dark"
+    THEME_ALT["$base"]="$alt"
 
     THEMES+=("$shadow_theme:$outline:$fill:1")
     THEME_NAME["$shadow_theme"]="Retrosmart $(_shadow_name "$name")"
-    THEME_NAME_ES["$shadow_theme"]="Retrosmart $(_shadow_name "$name_es")"
     THEME_STYLE["$shadow_theme"]="$style"
     THEME_ACCENT["$shadow_theme"]="$accent"
     THEME_ACCENT_DARK["$shadow_theme"]="$accent_dark"
-    THEME_WAIT_ALT["$shadow_theme"]="$wait_alt"
+    THEME_BRIGHT["$shadow_theme"]="$bright"
+    THEME_DARK["$shadow_theme"]="$dark"
+    THEME_ALT["$shadow_theme"]="$alt"
   }
 
-  while IFS=$'\t' read -r id outline fill name name_es style accent accent_dark; do
+  # NOTE: don't use `IFS=$'\t' read` directly here. Bash counts tab as IFS
+  # whitespace, so runs of tabs collapse into one delimiter and interior
+  # empty columns (e.g. outline/fill on win-3d schemes) silently shift every
+  # later field left. Swap tabs for a non-whitespace separator first, which
+  # preserves empty fields.
+  local line
+  while IFS= read -r line; do
+    IFS=$'\x1f' read -r id outline fill bright dark name style accent accent_dark <<<"${line//$'\t'/$'\x1f'}"
     [ -z "$id" ] && continue
 
     if [ ! -d "$SRC_BASE/$style" ]; then
@@ -215,17 +313,16 @@ build_theme_list() {
     fi
 
     base="retrosmart-xcursor-$id"
-    _register_theme_pair "$base" "$outline" "$fill" "$name" "$name_es" "$style" "$accent" "$accent_dark" ""
+    _register_theme_pair "$base" "$outline" "$fill" "$bright" "$dark" "$name" "$style" "$accent" "$accent_dark" ""
 
-    # Auto-discover wait-alt variants (src/<style>/alt/<altname>/32-wait*.xpm).
+    # Auto-discover alt variants (src/<style>/alt/<altname>/32-*.xpm).
     while IFS= read -r altname; do
       [ -z "$altname" ] && continue
       alt_label="$(_titlecase_alt "$altname")"
       alt_name="$(_with_alt_label "$name" "$alt_label")"
-      alt_name_es="$(_with_alt_label "$name_es" "$alt_label")"
       alt_base="retrosmart-xcursor-${id}-${altname}"
-      _register_theme_pair "$alt_base" "$outline" "$fill" "$alt_name" "$alt_name_es" "$style" "$accent" "$accent_dark" "$altname"
-    done < <(discover_wait_alts "$style" | sort)
+      _register_theme_pair "$alt_base" "$outline" "$fill" "$bright" "$dark" "$alt_name" "$style" "$accent" "$accent_dark" "$altname"
+    done < <(discover_alts "$style" | sort)
   done < <(python3 "$READ_COLOR_SCHEMES" "$COLOR_SCHEMES")
 
   if [ "${#THEMES[@]}" -eq 0 ]; then
@@ -235,8 +332,11 @@ build_theme_list() {
 }
 
 hotspots_tsv() {
-  local style="${1:-}"
-  python3 "$READ_HOTSPOTS" "$HOTSPOTS" ${style:+"$style"}
+  local style="${1:-}" alt="${2:-}"
+  local -a args=()
+  [ -n "$style" ] && args+=("$style")
+  [ -n "$style" ] && [ -n "$alt" ] && args+=("$alt")
+  python3 "$READ_HOTSPOTS" "$HOTSPOTS" ${args[@]+"${args[@]}"}
 }
 
 cursor_names() {
@@ -244,26 +344,20 @@ cursor_names() {
 }
 
 frames_for() {
-  local name="$1" style="$2" wait_alt="${3:-}"
-  local f base
+  local name="$1" style="$2" alt="${3:-}"
   declare -a frames=()
   # Any source cursor with a numeric suffix is a frame sequence. The delay
   # in hotspots.yaml decides whether that sequence is emitted as animated;
   # this keeps frame discovery in sync for Xcursor and future animated roles.
-  # Wait-alt themes pull wait frames from src/<style>/alt/<altname>/ only.
-  if [ "$name" = "wait" ] && [ -n "$wait_alt" ]; then
-    for f in "$SRC_BASE/$style/alt/$wait_alt"/32-wait[0-9]*.xpm; do
-      [ -e "$f" ] || continue
-      base="$(basename "$f" .xpm | sed 's/^32-//')"
-      frames+=("$base")
-    done
-  else
-    for f in "$SRC_BASE/$style"/32-"$name"[0-9]*.xpm; do
-      [ -e "$f" ] || continue
-      base="$(basename "$f" .xpm | sed 's/^32-//')"
-      frames+=("$base")
-    done
-  fi
+  # Frame sources may live at the style's top level, come from a brighter/
+  # override (e.g. mac-ish's wait01-08) or from an alt/<name>/ folder (e.g.
+  # win-3d's hourglass) -- merged_xpm_list resolves all of that, so an alt
+  # theme sees exactly the frame set it will rasterize.
+  local rname rpath rbright
+  while IFS=$'\x1f' read -r rname rpath rbright; do
+    [[ "$rname" =~ ^${name}[0-9]+$ ]] || continue
+    frames+=("$rname")
+  done < <(merged_xpm_list "$style" "$alt")
   if [ "${#frames[@]}" -gt 0 ]; then
     printf '%s\n' "${frames[@]}" | sort -V
   else
@@ -319,46 +413,38 @@ _rasterize_xpm_to_png() {
 
 process_theme_png() {
   local entry="$1"
-  local theme outline fill has_shadow style pdir xpm base name wait_alt
+  local theme outline fill has_shadow style pdir xpm name alt
   local -a recolor_args
   IFS=: read -r theme outline fill has_shadow <<<"$entry"
   style="${THEME_STYLE[$theme]}"
-  wait_alt="${THEME_WAIT_ALT[$theme]:-}"
+  alt="${THEME_ALT[$theme]:-}"
   pdir="$ARTIFACTS/png/$theme"
   mkdir -p "$pdir"
 
+  local -a bright_recolor_args=()
   if is_accent_style "$style"; then
     # Fixed-chrome styles: bevel colors are literal in the source, only the
     # accent placeholder pair gets swapped.
     recolor_args=(-e "s/#FF7F50/${THEME_ACCENT[$theme]}/gI" -e "s/#944A2E/${THEME_ACCENT_DARK[$theme]}/gI")
   else
     recolor_args=(-e "s/#00FFFF/$outline/gI" -e "s/#FF7F50/$fill/gI")
+    # Cursors sourced from a brighter/ override always use the scheme's
+    # brighter color as outline and the darker one as fill, whatever the
+    # scheme's own orientation (cur-font pointing hand: white outline /
+    # black fill in classic AND white).
+    bright_recolor_args=(-e "s/#00FFFF/${THEME_BRIGHT[$theme]}/gI" -e "s/#FF7F50/${THEME_DARK[$theme]}/gI")
   fi
 
-  declare -A seen=()
-  for xpm in "$SRC_BASE/$style"/32-*.xpm; do
-    [ -e "$xpm" ] || continue
-    base="$(basename "$xpm")"
-    [ -n "${seen[$base]:-}" ] && continue
-    seen[$base]=1
-    name="$(basename "$xpm" .xpm | sed 's/^32-//')"
+  local rname rpath rbright
+  while IFS=$'\x1f' read -r rname rpath rbright; do
+    [ -z "$rname" ] && continue
 
-    # Wait-alt themes skip top-level wait frames; those come from alt/<name>/.
-    if [ -n "$wait_alt" ] && [[ "$name" =~ ^wait[0-9] ]]; then
-      continue
+    if [ "$rbright" = 1 ] && [ "${#bright_recolor_args[@]}" -gt 0 ]; then
+      _rasterize_xpm_to_png "$rpath" "$rname" "$pdir" "$has_shadow" "${bright_recolor_args[@]}"
+    else
+      _rasterize_xpm_to_png "$rpath" "$rname" "$pdir" "$has_shadow" "${recolor_args[@]}"
     fi
-
-    _rasterize_xpm_to_png "$xpm" "$name" "$pdir" "$has_shadow" "${recolor_args[@]}"
-  done
-
-  if [ -n "$wait_alt" ]; then
-    for xpm in "$SRC_BASE/$style/alt/$wait_alt"/32-wait[0-9]*.xpm; do
-      [ -e "$xpm" ] || continue
-      name="$(basename "$xpm" .xpm | sed 's/^32-//')"
-      # Still write 32-waitNN.png (normal names) into this theme's png dir.
-      _rasterize_xpm_to_png "$xpm" "$name" "$pdir" "$has_shadow" "${recolor_args[@]}"
-    done
-  fi
+  done < <(merged_xpm_list "$style" "$alt")
 }
 
 step_png() {
@@ -367,22 +453,23 @@ step_png() {
 }
 
 step_in() {
-  # .in configs are keyed by (style, wait_alt) because wait-alt variants can
-  # have different frame counts (default 6, hand_stopwatch 9, hourglass 15).
+  # .in configs are keyed by (style, alt) because alt variants can differ in
+  # frame count (default 6, hand_stopwatch 9, hourglass 15) and in hotspot
+  # (hotspots.yaml's "<style>/<alt>" keys, e.g. mac-ish/straight_hand).
   declare -A generated=()
-  local entry theme style wait_alt key indir
+  local entry theme style alt key indir
   for entry in "${THEMES[@]}"; do
     IFS=: read -r theme _ _ _ <<<"$entry"
     style="${THEME_STYLE[$theme]}"
-    wait_alt="${THEME_WAIT_ALT[$theme]:-}"
-    key="${style}|${wait_alt}"
+    alt="${THEME_ALT[$theme]:-}"
+    key="${style}|${alt}"
     [ -n "${generated[$key]:-}" ] && continue
     generated[$key]=1
 
-    indir="$(in_dir_for "$style" "$wait_alt")"
+    indir="$(in_dir_for "$style" "$alt")"
     mkdir -p "$indir"
-    if [ -n "$wait_alt" ]; then
-      log "in   : generating for style=$style wait_alt=$wait_alt from data/hotspots.yaml"
+    if [ -n "$alt" ]; then
+      log "in   : generating for style=$style alt=$alt from data/hotspots.yaml"
     else
       log "in   : generating for style=$style from data/hotspots.yaml"
     fi
@@ -390,7 +477,7 @@ step_in() {
       [ -z "$name" ] && continue
       local out="$indir/$name"
       : > "$out"
-      for frame in $(frames_for "$name" "$style" "$wait_alt"); do
+      for frame in $(frames_for "$name" "$style" "$alt"); do
         for s in "${SIZES[@]}"; do
           local sx=$((x * s / HOTSPOT_SOURCE_SIZE))
           local sy=$((y * s / HOTSPOT_SOURCE_SIZE))
@@ -401,17 +488,17 @@ step_in() {
           fi
         done
       done
-    done < <(hotspots_tsv "$style")
+    done < <(hotspots_tsv "$style" "$alt")
   done
 }
 
 process_theme_cursors() {
   local entry="$1"
-  local theme outline fill has_shadow style cdir name link target wait_alt indir
+  local theme outline fill has_shadow style cdir name link target alt indir
   IFS=: read -r theme outline fill has_shadow <<<"$entry"
   style="${THEME_STYLE[$theme]}"
-  wait_alt="${THEME_WAIT_ALT[$theme]:-}"
-  indir="$(in_dir_for "$style" "$wait_alt")"
+  alt="${THEME_ALT[$theme]:-}"
+  indir="$(in_dir_for "$style" "$alt")"
   cdir="$BUILD_THEMES/Linux/$style/$theme/cursors"
   mkdir -p "$cdir"
 
@@ -429,7 +516,6 @@ process_theme_cursors() {
   cat > "$BUILD_THEMES/Linux/$style/$theme/index.theme" <<EOF
 [Icon Theme]
 Name=${THEME_NAME[$theme]}
-Name[es]=${THEME_NAME_ES[$theme]}
 Comment=Retrosmart cursor theme
 Comment[es]=Tema de cursores Retrosmart
 EOF

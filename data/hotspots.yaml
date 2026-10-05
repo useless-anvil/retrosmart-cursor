@@ -18,6 +18,11 @@
 #
 # A style's entry only needs the keys that differ from "all" -- e.g.
 # {win-ish: {delay: 120}} inherits x/y from "all" and only overrides delay.
+#
+# An alt variant (src/<style>/alt/<alt>/) can add its own "<style>/<alt>" line,
+# layered on top of the style's values -- e.g. mac-ish's straight hand:
+#       mac-ish/straight_hand: {x: 4, y: 0}
+# Alts without such a line inherit the style's hotspots.
 # Cursors with no style-specific quirks just get `all` and nothing else.
 #
 # Cursors are grouped under headings just for readability; the group names
@@ -33,6 +38,7 @@ Basic / System:
       win-ish: {x: 5, y: 0}
       cur-font: {x: 0, y: 2}
       win-3d: {x: 8, y: 0}
+      mac-ish/straight_hand: {x: 5, y: 1}   # fingertip is one column right of the base pointer's
 
   - cursor: context-menu
     hotspots: {all: {x: 0, y: 0}}

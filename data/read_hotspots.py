@@ -8,7 +8,7 @@ See data/hotspots.yaml's header comment for the schema, and
 data/hotspots_lib.py for how a style's x/y/delay get resolved against the
 "all" fallback.
 
-Usage: read_hotspots.py path/to/hotspots.yaml [style]
+Usage: read_hotspots.py path/to/hotspots.yaml [style [alt]]
 """
 import sys
 from pathlib import Path
@@ -18,11 +18,12 @@ from hotspots_lib import load_entries, resolve
 
 
 def main() -> int:
-    if len(sys.argv) not in (2, 3):
-        print("usage: read_hotspots.py <hotspots.yaml> [style]", file=sys.stderr)
+    if len(sys.argv) not in (2, 3, 4):
+        print("usage: read_hotspots.py <hotspots.yaml> [style [alt]]", file=sys.stderr)
         return 1
 
-    style = sys.argv[2] if len(sys.argv) == 3 else None
+    style = sys.argv[2] if len(sys.argv) >= 3 else None
+    alt = sys.argv[3] if len(sys.argv) == 4 else None
 
     for entry in load_entries(sys.argv[1]):
         name = entry.get("cursor")
@@ -30,7 +31,7 @@ def main() -> int:
             print(f"error: hotspots entry missing 'cursor' field: {entry}", file=sys.stderr)
             return 1
 
-        values = resolve(entry, style)
+        values = resolve(entry, style, alt)
         if "x" not in values or "y" not in values:
             print(
                 f"error: cursor '{name}' has no resolved x/y for style "

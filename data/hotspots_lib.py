@@ -17,6 +17,10 @@ Schema (see data/hotspots.yaml's own header comment for the full story):
 "all" is the fallback used when a style has no entry of its own. A style's
 entry only needs to carry the keys (x/y/delay) that actually differ from
 "all" -- resolve() merges on top, it doesn't require a full x/y/delay set.
+
+An alt variant (src/<style>/alt/<alt>/) can override on top of that with a
+"<style>/<alt>" key, e.g. ``mac-ish/straight_hand: {x: 4, y: 0}``. Alts with
+no such key just inherit the style's values.
 """
 from pathlib import Path
 
@@ -40,15 +44,18 @@ def load_entries(path) -> list[dict]:
     return entries
 
 
-def resolve(entry: dict, style: str | None) -> dict:
-    """Resolve x/y/delay for `entry` under `style`.
+def resolve(entry: dict, style: str | None, alt: str | None = None) -> dict:
+    """Resolve x/y/delay for `entry` under `style` (and optionally `alt`).
 
     Starts from hotspots.all (if present), then layers the style-specific
-    keys on top (if a style is given and has an entry). Missing keys are
-    simply absent from the result -- callers decide their own defaults.
+    keys on top (if a style is given and has an entry), then the
+    "<style>/<alt>" keys (if an alt is given and has an entry). Missing keys
+    are simply absent from the result -- callers decide their own defaults.
     """
     hotspots = entry.get("hotspots", {})
     values = dict(hotspots.get("all", {}))
     if style and style in hotspots:
         values.update(hotspots[style])
+    if style and alt and f"{style}/{alt}" in hotspots:
+        values.update(hotspots[f"{style}/{alt}"])
     return values
